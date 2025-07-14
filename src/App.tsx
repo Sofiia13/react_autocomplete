@@ -15,15 +15,19 @@ export const App: React.FC<Props> = ({ delay = 300 }) => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const debounceQuery = useCallback(debounce(setDebouncedQuery, delay), [delay]);
+  const debounceQuery = useCallback(debounce(setDebouncedQuery, delay), [
+    delay,
+  ]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+
     setQuery(value);
 
     if (value.trim() === '') {
       setDebouncedQuery('');
       setSelectedPerson(null);
+
       return;
     }
 
