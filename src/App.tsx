@@ -5,7 +5,9 @@ import { DropdownList } from './components/DropdownList';
 import { Person } from './types/Person';
 import debounce from 'lodash/debounce';
 
-export const App: React.FC = () => {
+type Props = { delay?: number };
+
+export const App: React.FC<Props> = ({ delay = 300 }) => {
   const [query, setQuery] = useState('');
   const [people] = useState(peopleFromServer);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
@@ -13,13 +15,20 @@ export const App: React.FC = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const debounceQuery = useCallback(debounce(setDebouncedQuery, 300), []);
+  const debounceQuery = useCallback(debounce(setDebouncedQuery, delay), [delay]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-
     setQuery(value);
+
+    if (value.trim() === '') {
+      setDebouncedQuery('');
+      setSelectedPerson(null);
+      return;
+    }
+
     debounceQuery(value);
+    setSelectedPerson(null);
   };
 
   const filteredPeople = useMemo(() => {
